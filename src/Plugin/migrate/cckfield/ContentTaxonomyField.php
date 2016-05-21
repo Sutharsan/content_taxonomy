@@ -8,7 +8,6 @@
 namespace Drupal\content_taxonomy\Plugin\migrate\cckfield;
 
 use Drupal\Core\Field\Plugin\migrate\cckfield\ReferenceBase;
-use Drupal\migrate\Plugin\Migration;
 use Drupal\migrate\Plugin\MigrationInterface;
 use Drupal\migrate\MigrateExecutable;
 use Drupal\migrate\MigrateMessage;
@@ -136,23 +135,29 @@ class ContentTaxonomyField extends ReferenceBase {
       'migration' => $this->bundleMigration,
     ];
 
-    $migration = Migration::create();
-    $executable = new MigrateExecutable($migration, new MigrateMessage());
     $row = new Row([], []);
-    $migrationPlugin = $this->migratePluginManager
+
+    /** @var \Drupal\migrate\Plugin\MigrationInterface $migration */
+    $migration = \Drupal::service('plugin.manager.migration')->createStubMigration([]);
+
+    /** @var \Drupal\migrate\Plugin\MigrateProcessInterface $migrationProcessPlugin */
+    $migrationProcessPlugin = $this->migratePluginManager
       ->createInstance('migration', $migration_plugin_configuration, $migration);
+
+    $executable = new MigrateExecutable($migration, new MigrateMessage());
 
     $ids = [];
     foreach ($source_ids as $role) {
-      $ids[] = $migrationPlugin->transform($role, $executable, $row, NULL);
+      $ids[] = $migrationProcessPlugin->transform($role, $executable, $row, NULL);
     }
+
     return array_combine($ids, $ids);
   }
 
   /**
-   * @param \Drupal\migrate\Entity\MigrationInterface $migration
+   * @param \Drupal\migrate\Plugin\MigrationInterface $migration
    *
-   * @return \Drupal\migrate\Entity\MigrationInterface
+   * @return \Drupal\migrate\Plugin\MigrationInterface
    */
   protected function addMigrationDependencies(MigrationInterface $migration) {
     $migration_dependencies = $migration->getMigrationDependencies();
