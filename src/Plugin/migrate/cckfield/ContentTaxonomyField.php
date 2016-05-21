@@ -8,8 +8,8 @@
 namespace Drupal\content_taxonomy\Plugin\migrate\cckfield;
 
 use Drupal\Core\Field\Plugin\migrate\cckfield\ReferenceBase;
-use Drupal\migrate\Entity\Migration;
-use Drupal\migrate\Entity\MigrationInterface;
+use Drupal\migrate\Plugin\Migration;
+use Drupal\migrate\Plugin\MigrationInterface;
 use Drupal\migrate\MigrateExecutable;
 use Drupal\migrate\MigrateMessage;
 use Drupal\migrate\Row;
